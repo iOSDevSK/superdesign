@@ -88,7 +88,9 @@ Here is an explanation of the settings fields (from top to bottom), and what to 
     *   This is only for people who want to run the local terminal tool from Anthropic. You are using a direct API, so these settings do not concern you.
     *   *(Only for 'Claude Code' provider)* has been added to these fields for clarity.
 6.  **Custom Anthropic ... (the bottom fields)**:
-    *   You can leave these empty. They serve only as a backup if you wanted to have separate keys from the standard Anthropic ones.
+7.  **Llm Provider** (Bottom of setting page):
+    *   **IGNORE THIS**. This is a legacy/advanced setting for specific local binary integrations (`claude-code` CLI).
+    *   It does **NOT** affect the "Ai Model Provider" you set above. You can leave it as `claude-api`.
 
 ---
 
