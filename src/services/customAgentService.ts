@@ -98,10 +98,12 @@ export class CustomAgentService implements AgentService {
                 effectiveProvider = 'openrouter';
             } else if (specificModel.startsWith('claude-')) {
                 effectiveProvider = 'anthropic';
-            } else if (specificModel.startsWith('GLM-')) {
-                effectiveProvider = 'z-ai';
-            } else {
+            } else if (specificModel.startsWith('gpt-') || specificModel.startsWith('o1-') || specificModel.startsWith('o3-')) {
                 effectiveProvider = 'openai';
+            } else {
+                // For any other specific model (like GLM-4.6V, local models), use custom-anthropic
+                // This prevents default 'openai' fallback which forces OpenAI key check
+                effectiveProvider = 'custom-anthropic';
             }
         }
 
