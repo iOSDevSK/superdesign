@@ -149,12 +149,11 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
                 configureCommand = 'superdesign.configureOpenAIApiKey';
                 displayName = `OpenAI (${this.getModelDisplayName(model)})`;
             } else {
-                // Default to custom-anthropic for any other model (like GLM, local models, etc.)
-                provider = 'custom-anthropic';
-                // Check custom key, but note effectively we also fallback to standard anthropic key in execution
-                apiKeyKey = 'customAnthropicApiKey';
-                configureCommand = 'workbench.action.openSettings'; // Best to open settings for custom config
-                displayName = `Custom (${this.getModelDisplayName(model)})`;
+                // Default to openai for custom models (standard for GLM, vLLM, etc.)
+                provider = 'openai';
+                apiKeyKey = 'openaiApiKey';
+                configureCommand = 'superdesign.configureOpenAIApiKey';
+                displayName = `OpenAI Compatible (${this.getModelDisplayName(model)})`;
             }
 
             // Update both provider and specific model
@@ -162,16 +161,7 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
             await config.update('aiModel', model, vscode.ConfigurationTarget.Global);
 
             // Check if the API key is configured for the selected provider
-            let apiKey = config.get<string>(apiKeyKey);
-
-            // Special handling for custom-anthropic fallback
-            if (!apiKey && provider === 'custom-anthropic') {
-                apiKey = config.get<string>('anthropicApiKey');
-                if (apiKey) {
-                    // Found standard key, so we're good
-                    console.log('Using standard Anthropic key for custom provider fallback');
-                }
-            }
+            const apiKey = config.get<string>(apiKeyKey);
 
             if (!apiKey) {
                 const result = await vscode.window.showWarningMessage(
