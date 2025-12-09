@@ -1,6 +1,6 @@
 {
   "name": "superdesign-unofficial",
-  "displayName": "Superdesign Dev",
+  "displayName": "Superdesign Unofficial",
   "description": "The 1st Design Agent lives inside your IDE",
   "version": "0.0.15",
   "publisher": "SuperdesignDev",
@@ -141,7 +141,7 @@
       ]
     },
     "configuration": {
-      "title": "Superdesign",
+      "title": "Superdesign Unofficial",
       "properties": {
         "superdesign.llmProvider": {
           "type": "string",
