@@ -99,7 +99,7 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
         const config = vscode.workspace.getConfiguration('superdesign');
         const currentProvider = config.get<string>('aiModelProvider', 'anthropic');
         const currentModel = config.get<string>('aiModel');
-        
+
         // If no specific model is set, use defaults
         let defaultModel: string;
         switch (currentProvider) {
@@ -114,7 +114,7 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
                 defaultModel = 'claude-4-sonnet-20250514';
                 break;
         }
-        
+
         webview.postMessage({
             command: 'currentProviderResponse',
             provider: currentProvider,
@@ -125,13 +125,13 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
     private async handleChangeProvider(model: string, webview: vscode.Webview) {
         try {
             const config = vscode.workspace.getConfiguration('superdesign');
-            
+
             // Determine provider and API key based on model
             let provider: string;
             let apiKeyKey: string;
             let configureCommand: string;
             let displayName: string;
-            
+
             if (model.includes('/')) {
                 // OpenRouter model (contains slash like "openai/gpt-4o")
                 provider = 'openrouter';
@@ -143,29 +143,45 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
                 apiKeyKey = 'anthropicApiKey';
                 configureCommand = 'superdesign.configureApiKey';
                 displayName = `Anthropic (${this.getModelDisplayName(model)})`;
-            } else {
+            } else if (model.startsWith('gpt-') || model.startsWith('o1-') || model.startsWith('o3-')) {
                 provider = 'openai';
                 apiKeyKey = 'openaiApiKey';
                 configureCommand = 'superdesign.configureOpenAIApiKey';
                 displayName = `OpenAI (${this.getModelDisplayName(model)})`;
+            } else {
+                // Default to custom-anthropic for any other model (like GLM, local models, etc.)
+                provider = 'custom-anthropic';
+                // Check custom key, but note effectively we also fallback to standard anthropic key in execution
+                apiKeyKey = 'customAnthropicApiKey';
+                configureCommand = 'workbench.action.openSettings'; // Best to open settings for custom config
+                displayName = `Custom (${this.getModelDisplayName(model)})`;
             }
-            
+
             // Update both provider and specific model
             await config.update('aiModelProvider', provider, vscode.ConfigurationTarget.Global);
             await config.update('aiModel', model, vscode.ConfigurationTarget.Global);
-            
+
             // Check if the API key is configured for the selected provider
-            const apiKey = config.get<string>(apiKeyKey);
-            
+            let apiKey = config.get<string>(apiKeyKey);
+
+            // Special handling for custom-anthropic fallback
+            if (!apiKey && provider === 'custom-anthropic') {
+                apiKey = config.get<string>('anthropicApiKey');
+                if (apiKey) {
+                    // Found standard key, so we're good
+                    console.log('Using standard Anthropic key for custom provider fallback');
+                }
+            }
+
             if (!apiKey) {
                 const result = await vscode.window.showWarningMessage(
                     `${displayName} selected, but API key is not configured. Would you like to configure it now?`,
                     'Configure API Key',
                     'Later'
                 );
-                
+
                 if (result === 'Configure API Key') {
-                    await vscode.commands.executeCommand(configureCommand);
+                    await vscode.commands.executeCommand(configureCommand, provider === 'custom-anthropic' ? '@ext:SuperdesignDev.superdesign-unofficial' : undefined);
                 }
             }
 
@@ -180,7 +196,7 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
             vscode.window.showErrorMessage(`Failed to update AI model: ${error}`);
         }
     }
-    
+
     private getModelDisplayName(model: string): string {
         const modelNames: { [key: string]: string } = {
             // OpenAI models
@@ -337,7 +353,7 @@ export class ChatSidebarProvider implements vscode.WebviewViewProvider {
             'rekaai/reka-flash-3': 'Reka Flash 3',
             'openrouter/auto': 'Auto (Best Available)'
         };
-        
+
         return modelNames[model] || model;
     }
 } 
