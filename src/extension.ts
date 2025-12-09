@@ -1403,7 +1403,23 @@ export function activate(context: vscode.ExtensionContext) {
 		resetWelcomeDisposable,
 		initializeProjectDisposable,
 		openSettingsDisposable,
-		configureApiKeyQuickDisposable
+		configureApiKeyQuickDisposable,
+		// Listen for configuration changes
+		vscode.workspace.onDidChangeConfiguration(e => {
+			if (e.affectsConfiguration('superdesign.aiModel') || e.affectsConfiguration('superdesign.aiModelProvider')) {
+				const config = vscode.workspace.getConfiguration('superdesign');
+				const newModel = config.get<string>('aiModel');
+				const newProvider = config.get<string>('aiModelProvider');
+
+				if (newModel && newProvider) {
+					sidebarProvider.sendMessage({
+						command: 'providerChanged',
+						provider: newProvider,
+						model: newModel
+					});
+				}
+			}
+		})
 	);
 }
 
