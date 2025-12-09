@@ -62,12 +62,22 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelCha
         { id: 'gpt-4.1-mini', name: 'GPT-4.1 Mini', provider: 'OpenAI', category: 'Fast' }
     ];
 
-    const filteredModels = models.filter(model =>
+    const effectiveModels = [...models];
+    if (selectedModel && !effectiveModels.some(m => m.id === selectedModel)) {
+        effectiveModels.unshift({
+            id: selectedModel,
+            name: selectedModel,
+            provider: 'Custom',
+            category: 'Custom'
+        });
+    }
+
+    const filteredModels = effectiveModels.filter(model =>
         model.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         model.provider.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const selectedModelName = models.find(m => m.id === selectedModel)?.name || selectedModel;
+    const selectedModelName = effectiveModels.find(m => m.id === selectedModel)?.name || selectedModel;
 
     const calculateDropdownPosition = () => {
         if (!triggerRef.current) return;
