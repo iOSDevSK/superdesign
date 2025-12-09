@@ -72,6 +72,24 @@ Instructions here (Click to play):
 
 Your generated designs are saved locally inside `.superdesign/`.
 
+## ⚙️ Configuration Guide
+
+Here is an explanation of the settings fields (from top to bottom), and what to watch out for:
+
+1.  **AI Model**: (e.g., `GLM-4.6V`)
+    *   This determines which model is queried. You can type any custom model name here.
+2.  **AI Model Provider**: `custom-anthropic`
+    *   Tells the extension to behave like a custom API compatible with Anthropic.
+3.  **Anthropic Api Key**: Your API Key
+    *   *Note:* Originally this field didn't work for custom providers, but it has been fixed to read from here as well.
+4.  **Anthropic Url**: Your Custom URL
+    *   *Note:* Also fixed to read from here.
+5.  **Claude Code ... (all 3 fields)**: **IGNORE**.
+    *   This is only for people who want to run the local terminal tool from Anthropic. You are using a direct API, so these settings do not concern you.
+    *   *(Only for 'Claude Code' provider)* has been added to these fields for clarity.
+6.  **Custom Anthropic ... (the bottom fields)**:
+    *   You can leave these empty. They serve only as a backup if you wanted to have separate keys from the standard Anthropic ones.
+
 ---
 
 ## ❓ FAQ

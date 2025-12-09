@@ -1,8 +1,8 @@
 {
-  "name": "superdesign-official",
+  "name": "superdesign-unofficial",
   "displayName": "Superdesign Dev",
   "description": "The 1st Design Agent lives inside your IDE",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "publisher": "SuperdesignDev",
   "icon": "icon.png",
   "repository": {
@@ -162,9 +162,14 @@
           "description": "Anthropic API key for Claude Code integration (required for claude-api provider)",
           "scope": "application"
         },
+        "superdesign.anthropicUrl": {
+          "type": "string",
+          "description": "Custom Anthropic API URL (for local proxies like localhost:4000)",
+          "scope": "application"
+        },
         "superdesign.claudeCodePath": {
           "type": "string",
-          "description": "Path to claude binary (defaults to 'claude' for npm install, use 'claude-code' if installed via shell script)",
+          "description": "Path to claude binary (Only for 'Claude Code' provider)",
           "scope": "application"
         },
         "superdesign.claudeCodeModelId": {
@@ -176,28 +181,28 @@
             "claude-3-opus-20240229"
           ],
           "default": "claude-sonnet-4-20250514",
-          "description": "Model ID to use with claude binary",
+          "description": "Model ID to use with claude binary (Only for 'Claude Code' provider)",
           "scope": "application"
         },
         "superdesign.claudeCodeThinkingBudget": {
           "type": "number",
           "default": 50000,
-          "description": "Thinking budget tokens for claude-code provider",
+          "description": "Thinking budget tokens (Only for 'Claude Code' provider)",
           "scope": "application"
         },
         "superdesign.openaiApiKey": {
           "type": "string",
-          "description": "OpenAI API key for custom agent",
+          "description": "OpenAI API key for OpenAI provider",
           "scope": "application"
         },
         "superdesign.openaiUrl": {
           "type": "string",
-          "description": "OpenAI url for custom agent",
+          "description": "OpenAI API URL (optional)",
           "scope": "application"
         },
         "superdesign.openrouterApiKey": {
           "type": "string",
-          "description": "OpenRouter API key for custom agent",
+          "description": "OpenRouter API key for OpenRouter provider",
           "scope": "application"
         },
         "superdesign.aiModelProvider": {
@@ -206,10 +211,21 @@
             "openai",
             "anthropic",
             "openrouter",
-            "claude-code"
+            "claude-code",
+            "custom-anthropic"
           ],
           "default": "anthropic",
-          "description": "AI model provider for custom agent (OpenAI, Anthropic, OpenRouter, or Claude Code - Note: Claude Code should be used via the main LLM Provider setting instead)",
+          "description": "AI model provider. Choose 'custom-anthropic' for z.ai or other custom endpoints.",
+          "scope": "application"
+        },
+        "superdesign.customAnthropicApiKey": {
+          "type": "string",
+          "description": "API key for custom Anthropic compatible provider (Leave empty to use standard Anthropic key)",
+          "scope": "application"
+        },
+        "superdesign.customAnthropicBaseUrl": {
+          "type": "string",
+          "description": "Base URL for custom Anthropic compatible provider (Leave empty to use standard Anthropic URL)",
           "scope": "application"
         },
         "superdesign.aiModel": {
